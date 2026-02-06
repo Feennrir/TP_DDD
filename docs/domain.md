@@ -10,10 +10,11 @@ L'organisation doit jongler entre des contraintes de temps réel (disponibilité
 
 # Rôles utilisateurs
 
-| Rôle | Type | Description
-| Responsable de Programmation   | Direction | Il définit la stratégie tarifaire et supervise le remplissage global des salles. Son objectif est d'optimiser les revenus et l'occupation des lieux sur l'ensemble de la saison.
-| Gestionnaire de Billetterie | Opérationnel | Il gère la configuration technique des événements, l'ouverture des ventes et le support en cas de litige. Il est garant de l'intégrité des données de réservation au quotidien
-| Spectateur | Client | Il recherche des événements, sélectionne ses places sur un plan de salle et procède au paiement sécurisé. Il attend une confirmation immédiate et un accès simple à ses billets numériques.
+| Rôle | Type | Description |
+| :--- | :--- | :--- |
+| Responsable de Programmation   | Direction | Il définit la stratégie tarifaire et supervise le remplissage global des salles. Son objectif est d'optimiser les revenus et l'occupation des lieux sur l'ensemble de la saison. |
+| Gestionnaire de Billetterie | Opérationnel | Il gère la configuration technique des événements, l'ouverture des ventes et le support en cas de litige. Il est garant de l'intégrité des données de réservation au quotidien |
+| Spectateur | Client | Il recherche des événements, sélectionne ses places sur un plan de salle et procède au paiement sécurisé. Il attend une confirmation immédiate et un accès simple à ses billets numériques. |
 
 # Problématiques métier
 
