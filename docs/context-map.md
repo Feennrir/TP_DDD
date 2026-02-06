@@ -7,9 +7,9 @@
 
 | Contexte source                   | Contexte cible                   | Pattern de relation                 | Justification |
 |----------------------------------|----------------------------------|-------------------------------------|---------------|
-| Contexte Réservation & Inventaire | Contexte Evenements               | Customer / Supplier                 | La Réservation consomme les données des événements. L'équipe Evenements (Supplier) travaille pour fournir les informations nécessaires à la vente (tarifs, plans) au moteur de réservation (Customer). |
-| Contexte Réservation & Inventaire | Contexte Paiement                 | Anticorruption Layer (ACL)          | Le Paiement est un service générique. La Réservation utilise une ACL pour traduire les réponses bancaires et protéger son modèle métier des changements techniques du prestataire externe. |
-| Contexte Billetterie & Accès      | Contexte Réservation & Inventaire | Customer / Supplier                 | La Billetterie a besoin des confirmations de vente du Core Domain pour générer les billets. Elle dépend des données fournies par le moteur de réservation après chaque transaction réussie. |
+| ContexteReservationInventaire | ContexteEvenements               | Customer / Supplier                 | La Réservation consomme les données des événements. L'équipe Evenements (Supplier) travaille pour fournir les informations nécessaires à la vente (tarifs, plans) au moteur de réservation (Customer). |
+| ContexteReservationInventaire | ContextePaiement                 | Anticorruption Layer (ACL)          | Le Paiement est un service générique. La Réservation utilise une ACL pour traduire les réponses bancaires et protéger son modèle métier des changements techniques du prestataire externe. |
+| ContexteBilletterieAcces      | ContexteReservationInventaire | Customer / Supplier                 | La Billetterie a besoin des confirmations de vente du Core Domain pour générer les billets. Elle dépend des données fournies par le moteur de réservation après chaque transaction réussie. |
 
 
 ## Intégrations techniques envisagées
