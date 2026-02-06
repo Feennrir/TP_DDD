@@ -32,3 +32,32 @@
 | ContexteReservationInventaire | Bounded Context central du système, responsable de la gestion des réservations et de l'inventaire en temps réel. Il gère le cycle de vie des paniers, les mécanismes de blocage temporaire des places et la mise à jour immédiate de l'inventaire pour éviter toute double réservation. Ce contexte applique également les règles de tarification complexes et les quotas de sécurité. | Le ContexteReservationInventaire reçoit les demandes de sélection de places, applique les règles de tarification et met à jour l'inventaire en temps réel pour garantir une expérience utilisateur fluide. |
 | ContexteEvenements | Bounded Context dédié à la gestion de la configuration des événements, des lieux et des plans de salle. Il fournit le référentiel de données nécessaire à l'ouverture des ventes par le gestionnaire et assure la cohérence des informations utilisées par le moteur de réservation. | Le ContexteEvenements permet au gestionnaire de configurer les détails d'un événement, comme les dates, les lieux et les plans de salle, qui seront ensuite utilisés par le moteur de réservation pour valider les sélections des clients. |
 | ContextePaiement | Bounded Context responsable de l'interface avec les prestataires de services de paiement externes. Il gère l'initiation des sessions de paiement, le suivi des transactions financières et la notification du succès ou de l'échec du règlement au reste du système. Ce contexte ne contient aucune logique métier spécifique à la billetterie et se concentre sur la gestion sécurisée des paiements. | Le ContextePaiement reçoit les demandes d'initiation de paiement du moteur de réservation, communique avec le prestataire externe pour valider la transaction et informe le système du résultat pour finaliser la commande. |
+
+| Terme |	Contexte principal
+| :--- | :---
+| Evenement | ContexteEvenements
+| Seance | ContexteEvenements
+| Lieu | ContexteEvenements | 
+| PlanDeSalle | ContexteEvenements | 
+| Zone | ContexteEvenements | 
+| CategorieDePlace | ContexteEvenements
+| StatutVente | ContexteEvenements | 
+| Guichet | ContexteEvenements | 
+| PublierEvenement | ContexteEvenements
+| ConfigurerPlanSalle | ContexteEvenements
+| Place | ContexteReservationInventaire
+| Jauge | ContexteReservationInventaire
+| Tarif | ContexteReservationInventaire
+| Panier | ContexteReservationInventaire
+| BlocageTemporaire | ContexteReservationInventaire
+| Reservation | ContexteReservationInventaire
+| SelectionnerPlace | ContexteReservationInventaire
+| CommandeClient | ContextePaiement
+| Acheteur | ContextePaiement
+| InitierPaiement | ContextePaiement
+| ValiderTransaction | ContextePaiement
+| Billet | ContexteBilleterieAcces
+| Beneficiaire | ContexteBilleterieAcces
+| QRCode | ContexteBilleterieAcces
+| GenererBillet | ContexteBilleterieAcces
+| Justificatif | ContexteBilleterieAcces
