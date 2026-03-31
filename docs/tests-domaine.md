@@ -167,3 +167,115 @@ Ce document présente les scénarios de test au format BDD (Given/When/Then) pou
 **And** la place PL1 reste uniquement associée à la zone Z1  
 **And** la structure hiérarchique n'est pas corrompue  
 **And** les calculs d'inventaire restent fiables
+
+---
+
+## Agrégat : Billet (Contexte Billetterie & Accès)
+
+### Invariant 7 : Unicité du QR Code
+
+#### Scénario 1 – Happy path
+
+**Given** une réservation R1 confirmée avec paiement validé  
+**And** la réservation R1 contient 2 places (P1, P2) pour la séance du 20 juin à 20h00  
+**And** aucun billet n'a encore été généré pour cette réservation  
+**When** le système génère les billets pour la réservation R1  
+**Then** un billet B1 est créé pour la place P1 avec un QR Code unique QR_ABC123  
+**And** un billet B2 est créé pour la place P2 avec un QR Code unique QR_DEF456  
+**And** les deux QR Codes (QR_ABC123 et QR_DEF456) sont différents  
+**And** aucun autre billet dans le système ne possède ces QR Codes  
+**And** les billets sont marqués avec le statut "Actif"
+
+#### Scénario 2 – Sad path
+
+**Given** un billet B1 existant avec le QR Code QR_XYZ789 pour un événement E1  
+**And** une nouvelle réservation R2 confirmée pour un événement E2 différent  
+**And** le système tente de générer un billet B2 pour la réservation R2  
+**When** le générateur de QR Code produit accidentellement le même code QR_XYZ789 (collision)  
+**Then** le système détecte la duplication avec l'erreur "QR Code déjà existant"  
+**And** aucun billet B2 n'est créé tant que l'unicité n'est pas garantie  
+**And** le système régénère un nouveau QR Code unique  
+**And** un log d'alerte est créé pour investigation de la collision
+
+---
+
+### Invariant 8 : Lien Réservation-Billet
+
+#### Scénario 1 – Happy path
+
+**Given** une réservation R1 avec le statut "Confirmée"  
+**And** le paiement de la réservation R1 a été validé par le prestataire (Transaction T1 validée)  
+**And** la réservation R1 contient 3 places pour la séance du 25 juin à 19h00  
+**When** le système déclenche la génération des billets pour la réservation R1  
+**Then** 3 billets (B1, B2, B3) sont créés avec succès  
+**And** chaque billet possède une référence immuable vers la réservation R1  
+**And** tous les billets sont marqués avec le statut "Actif"  
+**And** les billets sont envoyés par email au client avec les QR Codes
+
+#### Scénario 2 – Sad path
+
+**Given** une réservation R1 avec le statut "En cours" (non confirmée)  
+**And** aucun paiement n'a été validé pour cette réservation  
+**And** le délai d'expiration n'est pas encore dépassé  
+**When** un utilisateur malveillant tente de déclencher manuellement la génération de billets pour R1  
+**Then** le système rejette l'opération avec l'erreur "Réservation non confirmée : génération de billet impossible"  
+**And** aucun billet n'est créé  
+**And** aucun QR Code n'est généré  
+**And** un log de sécurité est créé pour tracer la tentative frauduleuse
+
+---
+
+## Agrégat : Transaction (Contexte Paiement)
+
+### Invariant 9 : Cohérence montant paiement
+
+#### Scénario 1 – Happy path
+
+**Given** une réservation R1 avec un montant total de 150 EUR (3 places à 50 EUR)  
+**And** le spectateur a validé son panier et initié le paiement  
+**And** le système calcule le montant à transmettre au prestataire de paiement  
+**When** le système crée une transaction T1 pour la réservation R1  
+**Then** la transaction T1 est créée avec un montant de 150 EUR  
+**And** le montant de la transaction (150 EUR) est strictement égal au montant de la réservation  
+**And** la transaction T1 est envoyée au prestataire Stripe avec ce montant  
+**And** la référence de la réservation R1 est stockée dans la transaction T1
+
+#### Scénario 2 – Sad path
+
+**Given** une réservation R1 avec un montant total de 120 EUR  
+**And** le système a calculé correctement le montant initial  
+**And** une erreur de synchronisation survient dans le système  
+**When** le système tente de créer une transaction T1 avec un montant incorrect de 180 EUR (différent de la réservation)  
+**Then** le système rejette l'opération avec l'erreur "Montant incohérent : transaction=180 EUR, réservation=120 EUR"  
+**And** aucune transaction n'est créée  
+**And** aucun appel au prestataire de paiement n'est effectué  
+**And** le spectateur est invité à réessayer  
+**And** un log d'erreur critique est créé pour investigation
+
+---
+
+### Invariant 10 : Unicité de confirmation
+
+#### Scénario 1 – Happy path
+
+**Given** une réservation R1 avec le statut "En cours"  
+**And** une transaction T1 initiée pour R1 avec le statut "En cours"  
+**And** le prestataire de paiement Stripe valide la transaction T1  
+**When** le système reçoit la notification de validation du paiement  
+**Then** la transaction T1 passe au statut "Validée"  
+**And** la réservation R1 passe au statut "Confirmée"  
+**And** la transaction T1 est marquée comme la transaction confirmée unique pour R1  
+**And** le système déclenche la génération des billets
+
+#### Scénario 2 – Sad path
+
+**Given** une réservation R1 avec le statut "Confirmée"  
+**And** une transaction T1 validée et confirmée pour la réservation R1  
+**And** les billets ont déjà été générés et envoyés au client  
+**When** le système reçoit une seconde notification de paiement (webhook en double ou tentative frauduleuse) pour la même réservation R1  
+**Then** le système rejette l'opération avec l'erreur "Réservation déjà confirmée : paiement multiple interdit"  
+**And** aucune nouvelle transaction n'est créée  
+**And** la réservation R1 reste inchangée avec la transaction T1 originale  
+**And** aucun billet supplémentaire n'est généré  
+**And** un log de sécurité est créé pour tracer la tentative de double paiement
+
