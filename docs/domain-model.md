@@ -14,7 +14,7 @@
 | Objet Valeur | Description métier | Propriétés principales |
 |--------------|--------------------|------------------------|
 | Prix         | Encapsule la valeur monétaire d'une place ou d'une commande. Il est immuable car une valeur de "50 EUR" ne change pas ; si le prix change, on remplace l'objet par un nouveau. | Montant, Devise |
-| Coordonnees  | Regroupe les informations de contact de l'acheteur (nom, prénom, email). Ces informations sont traitées comme un tout cohérent pour l'envoi des confirmations et des billets. | Nom, Prenom, Email |
+| Coordonnees  | Regroupe les informations de contact de l'acheteur (nom, prénom, email). Ces informations sont traitées comme un tout cohérent pour l'envoi des confirmations et des billets. | Nom, Email |
 | Emplacement  | Définit la localisation physique précise d'un siège au sein du lieu. Il combine les informations de rang et de numéro pour identifier la place sur le plan de salle. | Rang, NumeroSiege |
 
 
